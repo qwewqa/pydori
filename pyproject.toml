@@ -1,0 +1,12 @@
+[project]
+name = "pydori"
+version = "0.1.0"
+description = "A Bandori-based Sonolus engine written with Sonolus.py"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "sonolus.py~=0.3.3"
+]
+
+[tool.ruff]
+line-length = 120
