@@ -39,17 +39,17 @@ FALL_DURATION = 1.5
 # Number of times to show the motion during the frozen phase.
 FROZEN_REPEATS = 4
 
-# Duration of each tap motion demonstration cycle during the frozen phase.
+# Duration of the tap motion demonstration during each cycle of the frozen phase.
 FROZEN_TAP_DURATION = 1
 
-# Duration of the flick motion demonstration cycle during the frozen phase.
-FROZEN_FLICK_DURATION = 1.25
+# Duration of the hold motion demonstration during each cycle of the frozen phase.
+FROZEN_HOLD_DURATION = 1
 
-# Duration of the hold release motion demonstration cycle during the frozen phase.
+# Duration of the flick motion demonstration during each cycle of the frozen phase.
+FROZEN_FLICK_DURATION = 0.5
+
+# Duration of the hold release motion demonstration during each cycle of the frozen phase.
 FROZEN_RELEASE_DURATION = 1
-
-# Time offset before the end of the frozen phase to show the hit particle for flick notes.
-HIT_FLICK_OFFSET = 0.25
 
 # Duration after the frozen phase to wait before ending the phase.
 END_DURATION = 1.5
@@ -89,8 +89,8 @@ def tap_phase(t: PhaseTime):
 def flick_phase(t: PhaseTime):
     intro = t.first(INTRO_DURATION)
     fall = intro.next(FALL_DURATION)
-    frozen = fall.next(FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
-    hit = t.instant(frozen.end - HIT_FLICK_OFFSET)
+    frozen = fall.next(FROZEN_TAP_DURATION + FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
+    hit = t.instant(frozen.end - FROZEN_FLICK_DURATION)
     end = frozen.next(END_DURATION)
 
     if intro:
@@ -108,7 +108,9 @@ def flick_phase(t: PhaseTime):
                 lane=0,
                 y=0,
             )
-        paint_tap_flick_motion(lane_to_transformed_vec(0), ANGLE_UP, frozen.progress)
+        paint_tap_flick_motion(
+            lane_to_transformed_vec(0), ANGLE_UP, frozen.progress, FROZEN_TAP_DURATION, FROZEN_FLICK_DURATION
+        )
         Instructions.tap_flick.show()
     if hit:
         play_note_particle(NoteKind.FLICK, 0)
@@ -121,13 +123,13 @@ def flick_phase(t: PhaseTime):
 def directional_flick_phase(t: PhaseTime):
     intro = t.first(INTRO_DURATION)
     fall = intro.next(FALL_DURATION)
-    frozen = fall.next(FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
-    hit = t.instant(frozen.end - HIT_FLICK_OFFSET)
+    frozen = fall.next(FROZEN_TAP_DURATION + FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
+    hit = t.instant(frozen.end - FROZEN_FLICK_DURATION)
     end = frozen.next(END_DURATION)
 
     if intro:
-        draw_tutorial_intro_note(NoteKind.DIRECTIONAL_FLICK, direction=-1, x_offset=-0.4)
-        draw_tutorial_intro_note(NoteKind.DIRECTIONAL_FLICK, direction=1, x_offset=0.4)
+        draw_tutorial_intro_note(NoteKind.DIRECTIONAL_FLICK, direction=-1, lane=-0.55)
+        draw_tutorial_intro_note(NoteKind.DIRECTIONAL_FLICK, direction=1, lane=0.55)
     if fall:
         draw_note(NoteKind.DIRECTIONAL_FLICK, lane=-1, y=progress_to_y(fall.progress), direction=-1)
         draw_note(NoteKind.DIRECTIONAL_FLICK, lane=1, y=progress_to_y(fall.progress), direction=1)
@@ -135,8 +137,12 @@ def directional_flick_phase(t: PhaseTime):
         if hit.is_upcoming:
             draw_note(NoteKind.DIRECTIONAL_FLICK, lane=-1, y=0, direction=-1)
             draw_note(NoteKind.DIRECTIONAL_FLICK, lane=1, y=0, direction=1)
-        paint_tap_flick_motion(lane_to_transformed_vec(-1), ANGLE_LEFT, frozen.progress)
-        paint_tap_flick_motion(lane_to_transformed_vec(1), ANGLE_RIGHT, frozen.progress)
+        paint_tap_flick_motion(
+            lane_to_transformed_vec(-1), ANGLE_LEFT, frozen.progress, FROZEN_TAP_DURATION, FROZEN_FLICK_DURATION
+        )
+        paint_tap_flick_motion(
+            lane_to_transformed_vec(1), ANGLE_RIGHT, frozen.progress, FROZEN_TAP_DURATION, FROZEN_FLICK_DURATION
+        )
         Instructions.tap_flick.show()
     if hit:
         play_note_particle(NoteKind.DIRECTIONAL_FLICK, lane=-1, direction=-1)
@@ -214,7 +220,7 @@ def hold_tick_phase(t: PhaseTime):
     # Therefore, the frozen phase comes before the fall phase so we can show the instructions
     # before the ticks fall.
     intro = t.first(INTRO_DURATION)
-    frozen = intro.next(FROZEN_TAP_DURATION, repeats=FROZEN_REPEATS)
+    frozen = intro.next(FROZEN_HOLD_DURATION, repeats=FROZEN_REPEATS)
     fall = frozen.next(FALL_DURATION)
     end = fall.next(END_DURATION)
 
@@ -315,8 +321,8 @@ def hold_end_phase(t: PhaseTime):
 def hold_end_flick_phase(t: PhaseTime):
     intro = t.first(INTRO_DURATION)
     fall = intro.next(FALL_DURATION)
-    frozen = fall.next(FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
-    hit = frozen.end_instant()
+    frozen = fall.next(FROZEN_HOLD_DURATION + FROZEN_FLICK_DURATION, repeats=FROZEN_REPEATS)
+    hit = t.instant(frozen.end - FROZEN_FLICK_DURATION)
     end = frozen.next(END_DURATION)
 
     if intro:
@@ -335,12 +341,15 @@ def hold_end_flick_phase(t: PhaseTime):
         draw_hold_connector(0, 0, 0, progress_to_y(fall.progress))
         paint_hold_motion(lane_to_transformed_vec(0))
     if frozen:
-        draw_note(
-            NoteKind.FLICK,
-            lane=0,
-            y=0,
+        if hit.is_upcoming:
+            draw_note(
+                NoteKind.FLICK,
+                lane=0,
+                y=0,
+            )
+        paint_hold_flick_motion(
+            lane_to_transformed_vec(0), ANGLE_UP, frozen.progress, FROZEN_HOLD_DURATION, FROZEN_FLICK_DURATION
         )
-        paint_hold_flick_motion(lane_to_transformed_vec(0), ANGLE_UP, frozen.progress)
         Instructions.hold_flick.show()
     if hit:
         play_note_particle(NoteKind.FLICK, 0)

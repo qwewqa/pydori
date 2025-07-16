@@ -8,7 +8,7 @@ from pydori.tutorial.instructions import InstructionIcons
 
 
 # Scale factor for flick motion.
-FLICK_MOTION_DISTANCE = 0.8
+FLICK_MOTION_DISTANCE = 0.75
 
 
 def instruction_scale() -> float:
@@ -105,12 +105,8 @@ def paint_flick_motion(
     paint_follow_motion(from_pos, to_pos, progress, a=a)
 
 
-def paint_tap_flick_motion(
-    from_pos: Vec2,
-    angle: float,
-    progress: float,
-):
-    flick_start_progress = 0.8
+def paint_tap_flick_motion(from_pos: Vec2, angle: float, progress: float, tap_duration: float, flick_duration: float):
+    flick_start_progress = tap_duration / (tap_duration + flick_duration)
     if progress < flick_start_progress:
         paint_tap_motion(from_pos, remap(0, flick_start_progress, 0, 1, progress), fade_out=False)
     else:
@@ -121,8 +117,10 @@ def paint_hold_flick_motion(
     from_pos: Vec2,
     angle: float,
     progress: float,
+    hold_duration: float,
+    flick_duration: float,
 ):
-    flick_start_progress = 0.8
+    flick_start_progress = hold_duration / (hold_duration + flick_duration)
     if progress < flick_start_progress:
         paint_hold_motion(from_pos)
     else:
