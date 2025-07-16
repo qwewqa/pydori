@@ -242,7 +242,7 @@ def hold_tick_phase(t: PhaseTime):
                 continue
             elif prev_y < 0:
                 # Tick i is above the judgment line and tick i-1 is below it,
-                # so we can use the two find the current lane of the hold at the judgment line (y=0)
+                # so we can use the two to find the current lane of the hold at the judgment line (y=0)
                 hold_lane = remap(prev_y, y, tick_lanes[i - 1], tick_lanes[i], 0)
                 break
 
