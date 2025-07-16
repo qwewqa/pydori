@@ -190,20 +190,24 @@ def hold_head_phase(t: PhaseTime):
 def hold_tick_phase(t: PhaseTime):
     # Lane of each tick.
     tick_lanes = Array(
+        0,  # Dummy for the hold head.
         0,
         2,
         0,
         -2,
         0,
+        0,  # Dummy for the hold end.
     )
 
     # The fall progress at which each tick meets the judgment line.
     target_progresses = Array(
+        -999,  # Dummy for the hold head.
         0.2,
         0.4,
         0.6,
         0.8,
         1.0,
+        999,  # Dummy for the hold end.
     )
 
     # We do ticks a little differently since we want to show the motion of following ticks.
@@ -226,20 +230,22 @@ def hold_tick_phase(t: PhaseTime):
     # Draw the ticks, hold motion, and connectors in all phases after the intro.
     if intro.is_done:
         # Play the particle, draw the head, and paint the hold motion.
+
         particle = get_hold_particle()
         sfx = get_hold_sfx()
-        for i, lane in enumerate(tick_lanes):
+
+        hold_lane = 0
+        for i in range(1, len(tick_lanes)):
             y = tick_y(i)
+            prev_y = tick_y(i - 1)
             if y < 0:
                 continue
-            else:
-                # Now the current tick is above the judgment line and the previous tick is below it.
-                # We can find the current lane of the hold at the judgment line.
-                hold_lane = remap(tick_y(i - 1), y, tick_lanes[i - 1], lane, 0)
+            elif prev_y < 0:
+                # Tick i is above the judgment line and tick i-1 is below it,
+                # so we can use the two find the current lane of the hold at the judgment line (y=0)
+                hold_lane = remap(prev_y, y, tick_lanes[i - 1], tick_lanes[i], 0)
                 break
-        else:  # no break
-            # No tick is above the judgment line, so the current hold lane is the last tick lane.
-            hold_lane = tick_lanes[-1]
+
         update_hold_particle(particle, hold_lane)
         if frozen.is_done:
             # Only play sfx once frozen is done because it's a bit distracting otherwise.
@@ -247,11 +253,7 @@ def hold_tick_phase(t: PhaseTime):
         draw_note_head(hold_lane)
         paint_hold_motion(lane_to_transformed_vec(hold_lane))
 
-        # Draw first and last hold connectors.
-        draw_hold_connector(tick_lanes[0], tick_lanes[0], -99, tick_y(0))
-        draw_hold_connector(tick_lanes[-1], tick_lanes[-1], tick_y(len(tick_lanes) - 1), 99)
-
-        # Draw in-between hold connectors.
+        # Draw the connectors.
         for i in range(1, len(tick_lanes)):
             draw_hold_connector(tick_lanes[i - 1], tick_lanes[i], tick_y(i - 1), tick_y(i))
 
