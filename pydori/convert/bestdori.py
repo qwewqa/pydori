@@ -99,8 +99,8 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
     for archetype, d in entities:
         match archetype:
             case "CurvedSlideConnector" | "StraightSlideConnector":
-                first = notes_by_index[d["head"]]
-                second = notes_by_index[d["tail"]]
+                first = notes_by_index[int(d["head"])]
+                second = notes_by_index[int(d["tail"])]
                 hold_connectors.append(HoldConnector(first_ref=first.ref(), second_ref=second.ref()))
                 second.prev_ref = first.ref()
                 first.next_ref = second.ref()

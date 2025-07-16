@@ -68,9 +68,15 @@ def make_relative(path: str) -> str:
     return path
 
 
+def _ensure_dict(data: dict | list) -> dict:
+    if isinstance(data, dict):
+        return data
+    raise TypeError("Expected a dict.")
+
+
 class EntityData(NamedTuple):
     archetype: str
-    data: dict[str, float]
+    data: dict[str, int | float]
 
 
 def parse_entities(data: list[dict]) -> list[EntityData]:
@@ -86,7 +92,8 @@ def parse_entities(data: list[dict]) -> list[EntityData]:
 
 def get_sonolus_level_item(name: str, base_url: str) -> dict:
     """Fetch a specific Sonolus level item by name."""
-    return get_json(urljoin(urljoin(base_url, "sonolus/levels/"), name + "?localization=en"))["item"]
+    data = get_json(urljoin(urljoin(base_url, "sonolus/levels/"), name + "?localization=en"))
+    return _ensure_dict(data)["item"]
 
 
 def get_level_items(base_url: str) -> list[dict]:
@@ -95,7 +102,7 @@ def get_level_items(base_url: str) -> list[dict]:
     page = 0
     results = []
     while True:
-        data = get_json(levels_url + f"&page={page}")
+        data = _ensure_dict(get_json(levels_url + f"&page={page}"))
         results.extend(data["items"])
         page += 1
         if page >= data["pageCount"]:
@@ -109,7 +116,7 @@ def get_playlist_items(base_url: str) -> list[dict]:
     page = 0
     results = []
     while True:
-        data = get_json(playlist_url + f"&page={page}")
+        data = _ensure_dict(get_json(playlist_url + f"&page={page}"))
         results.extend(data["items"])
         page += 1
         if page >= data["pageCount"]:
@@ -171,5 +178,7 @@ def convert_sonolus_level_item(
         preview=get_bytes(urljoin(base_url, item["preview"]["url"].replace(" ", "%20")))
         if item.get("preview")
         else None,
-        data=data_converter(get_json_gzip(urljoin(base_url, make_relative(item["data"]["url"].replace(" ", "%20"))))),
+        data=data_converter(
+            _ensure_dict(get_json_gzip(urljoin(base_url, make_relative(item["data"]["url"].replace(" ", "%20")))))
+        ),
     )
