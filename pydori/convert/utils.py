@@ -141,7 +141,9 @@ def write_playlist_items(path: PathLike, tag: str | None, items: list[dict]):
         (pl_path / "item.json").write_text(json.dumps(item, ensure_ascii=False), encoding="utf-8")
 
 
-def convert_sonolus_level_item(item: dict, base_url: str, tag: str | None, data_converter: Callable[[dict], LevelData]):
+def convert_sonolus_level_item(
+    item: dict, base_url: str, tag: str | None, data_converter: Callable[[dict], LevelData]
+) -> Level:
     """Download and convert a Sonolus item to a LevelData object.
 
     Args:

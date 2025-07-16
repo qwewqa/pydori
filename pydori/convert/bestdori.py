@@ -1,6 +1,6 @@
 import itertools
 
-from sonolus.script.level import LevelData, BpmChange
+from sonolus.script.level import LevelData, BpmChange, Level
 
 from pydori.convert.utils import get_sonolus_level_item, convert_sonolus_level_item, parse_entities
 from pydori.lib.note import NoteKind
@@ -9,7 +9,7 @@ from pydori.play.note import Note, UnscoredNote
 from pydori.play.stage import Stage
 
 
-def convert_sonolus_bandori_level(name: str, base_url: str = "https://sonolus.bestdori.com/official/") -> LevelData:
+def convert_sonolus_bandori_level(name: str, base_url: str = "https://sonolus.bestdori.com/official/") -> Level:
     """Download and convert a Sonolus Bandori level data to pydori level data."""
     item = get_sonolus_level_item(name, base_url)
     return convert_sonolus_level_item(item, base_url, "Bandori", convert_sonolus_bandori_level_data)
