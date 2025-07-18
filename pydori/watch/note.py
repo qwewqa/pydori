@@ -121,16 +121,22 @@ class WatchNote(WatchArchetype):
             start_time = 0
             for input_time, is_active in Streams.hold_activity[self.head.index].iter_items_from(-10):
                 if input_time < self.head.target_time:
+                    # This is before the head meets the judge line, so it's irrelevant.
                     continue
                 if input_time > self.end.target_time:
+                    # This is after the end, so we can stop checking.
                     break
                 if is_active and not was_active:
+                    # Record the start time of a timespan where the hold is active.
                     start_time = input_time
                     was_active = True
                 if not is_active and was_active:
+                    # An active timespan has ended, so we can schedule the hold sfx over it.
                     schedule_hold_sfx(start_time, input_time)
                     was_active = False
             if was_active:
+                # If the last recorded value was that the hold was active, we can assume it was active until the end,
+                # and schedule the sfx from the current start time to the end of the hold.
                 schedule_hold_sfx(start_time, self.end.target_time)
         else:
             schedule_hold_sfx(self.head.target_time, self.end.target_time)

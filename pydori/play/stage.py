@@ -1,4 +1,5 @@
 from sonolus.script.archetype import PlayArchetype, callback
+from sonolus.script.containers import ArraySet
 from sonolus.script.runtime import time
 
 from pydori.lib.buckets import init_score, init_buckets
@@ -11,7 +12,7 @@ from pydori.lib.stage import (
     play_lane_sfx,
     play_lane_particle,
 )
-from pydori.lib.streams import EffectLanes, Streams
+from pydori.lib.streams import Streams
 from pydori.lib.ui import init_ui
 from pydori.play.input import refresh_input_state, unclaimed_taps
 from pydori.play.note import active_notes, Note
@@ -50,7 +51,7 @@ class Stage(PlayArchetype):
 
     @staticmethod
     def handle_empty_lane_taps():
-        effect_lanes = EffectLanes.new()
+        effect_lanes = ArraySet[float, 16].new()
         for tap in unclaimed_taps():
             for lane, quad in StageData.lane_layouts.items():
                 if quad.contains_point(tap.position):
@@ -58,4 +59,6 @@ class Stage(PlayArchetype):
                     play_lane_particle(lane)
                     play_lane_sfx()
         if len(effect_lanes) > 0:
+            # Record this so it can be replayed in watch mode since there's no direct
+            # access to touches in watch mode.
             Streams.effect_lanes[time()] = effect_lanes

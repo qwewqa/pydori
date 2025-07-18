@@ -124,12 +124,21 @@ class Note(PlayArchetype):
         if time() in self.input_interval:
             active_notes.append(self.ref())
         if self.best_judgment_time > DEFAULT_BEST_JUDGMENT_TIME:
+            # For holds and flicks, we wait until it's impossible to improve the judgment before judging.
+            # E.g. the player might be within a hold tick's hitbox at the early good window, move their finger away,
+            # then move it back inside within the perfect window. It would be unfair to judge the note immediately
+            # when the player moved their finger away, so we wait until it would be impossible to improve the judgment
+            # before judging.
             can_improve = (
                 self.best_judgment_time < self.target_time
                 and offset_adjusted_time() - self.target_time < self.target_time - self.best_judgment_time
             )
             if not can_improve:
                 self.judge(self.best_judgment_time)
+        # Compared to the original Bandori mechanics, pydori is more lenient with releasing hold notes.
+        # Releasing a hold is no longer an automatic miss, so accidentally releasing a hold note early is okay
+        # as long as the player puts their finger back down before the next tick or the hold end.
+        # We still keep track of a single active touch so players can't cheat using multiple fingers on the same hold.
         if self.has_active_touch:
             claim_touch(self.active_touch_id)
 
@@ -170,6 +179,7 @@ class Note(PlayArchetype):
 
     def handle_hold_input(self, quad: Quad):
         if self.has_prev and not (self.head.is_judged or self.head.is_despawned):
+            # If the hold head is still around, require players to tap the head to start the hold.
             return
         if time() not in self.input_interval:
             return
@@ -186,6 +196,7 @@ class Note(PlayArchetype):
 
     def handle_release_input(self, quad: Quad):
         if self.has_prev and not (self.head.is_judged or self.head.is_despawned):
+            # If the hold head is still around, require players to tap the head to start the hold.
             return
         if time() not in self.input_interval:
             return
@@ -203,12 +214,15 @@ class Note(PlayArchetype):
 
     def handle_flick_input(self, quad: Quad):
         if self.has_prev and not (self.head.is_judged or self.head.is_despawned):
+            # If the hold head is still around, require players to tap the head to start the hold.
             return
         if time() not in self.input_interval:
             return
         if self.has_prev:
+            # If this is a hold-flick, then we don't require a new tap to start the flick.
             self.capture_touch_if_needed(quad)
         else:
+            # Regular flicks require a tap before flicking.
             self.capture_tap_if_needed(quad)
         if self.has_active_touch:
             for touch in touches():
@@ -223,6 +237,7 @@ class Note(PlayArchetype):
                 break
 
     def capture_touch_if_needed(self, quad: Quad):
+        """If there is no active touch, try to claim a touch that is inside the quad and set it as the active touch."""
         if not self.has_active_touch:
             for touch in unclaimed_touches():
                 if not quad.contains_point(touch.position):
@@ -234,6 +249,7 @@ class Note(PlayArchetype):
                 break
 
     def capture_tap_if_needed(self, quad: Quad):
+        """If there is no active touch, try to claim a tap that is inside the quad and set it as the active touch."""
         if not self.has_active_touch:
             for touch in unclaimed_taps():
                 if not quad.contains_point(touch.position):
@@ -256,6 +272,7 @@ class Note(PlayArchetype):
                 continue
             if abs(other.target_time - self.target_time) > 0.005:
                 continue
+            # Shrink the hitbox if it overlaps with another note's hitbox and they have about the same target time.
             hitbox @= hitbox.shrink_overlap(other.base_hitbox)
         return hitbox
 

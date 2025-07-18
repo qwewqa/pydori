@@ -55,6 +55,8 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                     kind=NoteKind.DIRECTIONAL_FLICK,
                     beat=d["#BEAT"],
                     lane=d["lane"],
+                    # The Bandori engine stores direction as 1/-1 and size as a positive integer 1 to 3.
+                    # In pydori, we combine these into a single signed value -3 to 3.
                     direction=d["direction"] * d["size"],
                 )
                 notes.append(note)
@@ -115,6 +117,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
         notes_by_beat.setdefault(note.beat, []).append(note)
     for group in notes_by_beat.values():
         group.sort(key=lambda note: note.lane)
+        # Anchors don't make sense to connect to, and connecting to ticks is mostly noise, so we skip them.
         for a, b in itertools.pairwise(n for n in group if n.kind not in {NoteKind.HOLD_TICK, NoteKind.HOLD_ANCHOR}):
             sim_lines.append(SimLine(first_ref=a.ref(), second_ref=b.ref()))
 

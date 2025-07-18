@@ -213,8 +213,6 @@ def layout_preview_sim_line(
     col = time_to_preview_col(time)
     left_x = lane_to_preview_x(lane_a, col)
     right_x = lane_to_preview_x(lane_b, col)
-    if left_x > right_x:
-        left_x, right_x = right_x, left_x
     y = time_to_preview_y(time)
     return Quad(
         bl=Vec2(left_x, y - PREVIEW_LANE_WIDTH / 2 / 4),

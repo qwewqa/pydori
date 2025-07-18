@@ -22,11 +22,15 @@ class HoldConnector(PlayArchetype):
 
     def update_sequential(self):
         if time() >= self.second.target_time:
+            # The target time of the second note has passed, so this connector is no longer needed.
             self.despawn = True
             return
-        if not self.first.target_time <= time() < self.second.target_time:
-            return
-        self.head.hold_lane = remap(self.first.y, self.second.y, self.first.lane, self.second.lane, 0)
+        if self.first.target_time <= time() < self.second.target_time:
+            # This connector is the one currently crossing the judgment line,
+            # so it has the information to calculate which lane the hold is currently crossing the judgment line at.
+            # The hold lane is stored in the note head so the hold manager can use it draw the hold particle and
+            # note head at the correct lane.
+            self.head.hold_lane = remap(self.first.y, self.second.y, self.first.lane, self.second.lane, 0)
 
     def update_parallel(self):
         if self.despawn:

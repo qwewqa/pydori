@@ -36,7 +36,11 @@ def draw_tutorial_intro_note(
     larger and centered on the screen.
     """
     orig_center = transform_vec(Vec2(0, INTRO_DRAW_Y))
-    post_transform = Transform2d.new().translate(-orig_center).scale(Vec2(INTRO_SCALE, INTRO_SCALE))
+    post_transform = (
+        Transform2d.new()
+        .translate(-orig_center)  # Center the note on the screen
+        .scale(Vec2(INTRO_SCALE, INTRO_SCALE))  # Scale it up
+    )
     body_sprite = get_note_body_sprite(kind, direction)
     arrow_sprite = get_note_arrow_sprite(kind, direction)
     draw_tutorial_intro_note_body(body_sprite, post_transform, lane)

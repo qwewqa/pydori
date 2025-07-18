@@ -17,6 +17,7 @@ from pydori.lib.options import Options
 from pydori.lib.particle import Particles
 from pydori.lib.skin import Skin
 
+# The duration of the lane effect particle.
 LANE_EFFECT_DURATION = 0.2
 
 
