@@ -124,7 +124,7 @@ class Note(PlayArchetype):
         if time() in self.input_interval:
             active_notes.append(self.ref())
         if self.best_judgment_time > DEFAULT_BEST_JUDGMENT_TIME:
-            # For holds and flicks, we wait until it's impossible to improve the judgment before judging.
+            # For holds ticks and flicks, we wait until it's impossible to improve the judgment before judging.
             # E.g. the player might be within a hold tick's hitbox at the early good window, move their finger away,
             # then move it back inside within the perfect window. It would be unfair to judge the note immediately
             # when the player moved their finger away, so we wait until it would be impossible to improve the judgment
@@ -134,6 +134,10 @@ class Note(PlayArchetype):
                 and offset_adjusted_time() - self.target_time < self.target_time - self.best_judgment_time
             )
             if not can_improve:
+                if self.target_time - 1 / 30 <= self.best_judgment_time <= self.target_time:
+                    # If the best judgment time is just before the target time, we assume that they player has been
+                    # continuous holding the tick or flicking, and we treat it as having perfect timing.
+                    self.best_judgment_time = self.target_time
                 self.judge(self.best_judgment_time)
         # Compared to the original Bandori mechanics, pydori is more lenient with releasing hold notes.
         # Releasing a hold is no longer an automatic miss, so accidentally releasing a hold note early is okay
