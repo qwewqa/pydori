@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Self
 
 from sonolus.script.archetype import (
     PlayArchetype,
@@ -14,6 +13,7 @@ from sonolus.script.archetype import (
     callback,
 )
 from sonolus.script.bucket import JudgmentWindow, Judgment
+from sonolus.script.array import Dim
 from sonolus.script.containers import VarArray
 from sonolus.script.effect import LoopedEffectHandle
 from sonolus.script.globals import level_memory
@@ -122,7 +122,7 @@ class Note(PlayArchetype):
             self.despawn = True
             return
         if time() in self.input_interval:
-            active_notes.append(self.ref())
+            NoteMemory.active_notes.append(self.ref())
         if self.best_judgment_time > DEFAULT_BEST_JUDGMENT_TIME:
             # For holds ticks and flicks, we wait until it's impossible to improve the judgment before judging.
             # E.g. the player might be within a hold tick's hitbox at the early good window, move their finger away,
@@ -270,7 +270,7 @@ class Note(PlayArchetype):
 
     def get_hitbox(self) -> Hitbox:
         hitbox = self.base_hitbox
-        for other_ref in active_notes:
+        for other_ref in NoteMemory.active_notes:
             other = other_ref.get()
             if other.is_judged:
                 continue
@@ -311,7 +311,7 @@ class Note(PlayArchetype):
         return self.prev_ref.index > 0
 
     @property
-    def prev(self) -> Self:
+    def prev(self) -> Note:
         return self.prev_ref.get()
 
     @property
@@ -319,15 +319,15 @@ class Note(PlayArchetype):
         return self.next_ref.index > 0
 
     @property
-    def next(self) -> Self:
+    def next(self) -> Note:
         return self.next_ref.get()
 
     @property
-    def head(self) -> Self:
+    def head(self) -> Note:
         return self.head_ref.get()
 
     @property
-    def end(self) -> Self:
+    def end(self) -> Note:
         return self.end_ref.get()
 
     @property
@@ -414,5 +414,6 @@ class HoldManager(PlayArchetype):
         return self.end_ref.get()
 
 
-# Tracks notes with active judgment windows for hitbox calculations.
-active_notes = level_memory(VarArray[EntityRef[Note], 16])
+@level_memory
+class NoteMemory:
+    active_notes: VarArray[EntityRef[Note], Dim[16]]

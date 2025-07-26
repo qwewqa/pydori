@@ -1,4 +1,5 @@
 from sonolus.script.archetype import PlayArchetype, callback
+from sonolus.script.array import Dim
 from sonolus.script.containers import ArraySet
 from sonolus.script.runtime import time
 
@@ -15,7 +16,7 @@ from pydori.lib.stage import (
 from pydori.lib.streams import Streams
 from pydori.lib.ui import init_ui
 from pydori.play.input import refresh_input_state, unclaimed_taps
-from pydori.play.note import active_notes, Note
+from pydori.play.note import NoteMemory, Note
 
 
 class Stage(PlayArchetype):
@@ -40,7 +41,7 @@ class Stage(PlayArchetype):
     @callback(order=-1)
     def update_sequential(self):
         refresh_input_state()
-        active_notes.clear()
+        NoteMemory.active_notes.clear()
 
     def update_parallel(self):
         draw_stage()
@@ -51,7 +52,7 @@ class Stage(PlayArchetype):
 
     @staticmethod
     def handle_empty_lane_taps():
-        effect_lanes = ArraySet[float, 16].new()
+        effect_lanes = ArraySet[float, Dim[16]].new()
         for tap in unclaimed_taps():
             for lane, quad in StageData.lane_layouts.items():
                 if quad.contains_point(tap.position):

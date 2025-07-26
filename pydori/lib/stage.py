@@ -5,13 +5,13 @@ from sonolus.script.quad import Quad
 from pydori.lib.effect import Effects, SFX_DISTANCE
 from pydori.lib.layer import LAYER_LANE, LAYER_JUDGE_LINE
 from pydori.lib.layout import (
-    LANE_COUNT,
     START_LANE,
     END_LANE,
     layout_lane,
     layout_stage_left_border,
     layout_stage_right_border,
     layout_judge_line,
+    LANE_COUNT_DIM,
 )
 from pydori.lib.options import Options
 from pydori.lib.particle import Particles
@@ -23,7 +23,7 @@ LANE_EFFECT_DURATION = 0.2
 
 @level_data
 class StageData:
-    lane_layouts: ArrayMap[float, Quad, LANE_COUNT]
+    lane_layouts: ArrayMap[float, Quad, LANE_COUNT_DIM]
     left_border_layout: Quad
     right_border_layout: Quad
     judge_line_layout: Quad

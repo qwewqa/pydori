@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 
-from typing import Self
-
 from sonolus.script.archetype import (
     WatchArchetype,
     imported,
@@ -150,7 +148,7 @@ class WatchNote(WatchArchetype):
         return self.prev_ref.index > 0
 
     @property
-    def prev(self) -> Self:
+    def prev(self) -> WatchNote:
         return self.prev_ref.get()
 
     @property
@@ -158,15 +156,15 @@ class WatchNote(WatchArchetype):
         return self.next_ref.index > 0
 
     @property
-    def next(self) -> Self:
+    def next(self) -> WatchNote:
         return self.next_ref.get()
 
     @property
-    def head(self) -> Self:
+    def head(self) -> WatchNote:
         return self.head_ref.get()
 
     @property
-    def end(self) -> Self:
+    def end(self) -> WatchNote:
         return self.end_ref.get()
 
     @property

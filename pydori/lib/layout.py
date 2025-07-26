@@ -1,6 +1,7 @@
 from math import pi
 from typing import Self
 
+from sonolus.script.array import Dim
 from sonolus.script.easing import ease_out_quad
 from sonolus.script.globals import level_data
 from sonolus.script.interval import remap, lerp, interp_clamped, clamp
@@ -22,7 +23,8 @@ from pydori.lib.options import Options
 # Range of lanes in the game.
 START_LANE = -3
 END_LANE = 3
-LANE_COUNT = END_LANE - START_LANE + 1
+LANE_COUNT = 7
+LANE_COUNT_DIM = Dim[7]
 
 # The y-coordinate of the judge line in screen coordinates.
 JUDGE_LINE_SCREEN_Y = -0.5
