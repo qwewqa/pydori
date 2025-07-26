@@ -159,7 +159,7 @@ class Note(PlayArchetype):
     def touch(self):
         if self.despawn:
             return
-        hitbox_quad = self.get_hitbox().layout()
+        hitbox_quad = self.calculate_hitbox().layout()
         match self.kind:
             case NoteKind.TAP | NoteKind.HOLD_HEAD:
                 self.handle_tap_input(hitbox_quad)
@@ -268,17 +268,27 @@ class Note(PlayArchetype):
         if new_error < prev_error:
             self.best_judgment_time = offset_adjusted_time()
 
-    def get_hitbox(self) -> Hitbox:
-        hitbox = self.base_hitbox
-        for other_ref in NoteMemory.active_notes:
-            other = other_ref.get()
-            if other.is_judged:
-                continue
-            if abs(other.target_time - self.target_time) > 0.005:
-                continue
-            # Shrink the hitbox if it overlaps with another note's hitbox and they have about the same target time.
-            hitbox @= hitbox.shrink_overlap(other.base_hitbox)
-        return hitbox
+    def calculate_hitbox(self) -> Hitbox:
+        base_hitbox = self.base_hitbox
+        right_overlap = 0
+        left_overlap = 0
+        other_notes = (ref.get() for ref in NoteMemory.active_notes if ref.index != self.index)
+        simultaneous_notes = (
+            note
+            for note in other_notes
+            if not note.is_judged and abs(note.target_time - self.target_time) <= 0.005 and not note.has_active_touch
+        )
+        for sim_note in simultaneous_notes:
+            sim_hitbox = sim_note.base_hitbox
+            if sim_note.lane > self.lane:
+                # The overlap between the hitboxes is how much the right side of the base hitbox
+                # extends beyond the left side of the sim note's hitbox.
+                right_overlap = max(right_overlap, base_hitbox.right - sim_hitbox.left)
+            elif sim_note.lane < self.lane:
+                # The same logic the other way around for the left side.
+                left_overlap = max(left_overlap, sim_hitbox.right - base_hitbox.left)
+        # Shrink the base hitbox by half the overlap on each side.
+        return Hitbox(left=base_hitbox.left + left_overlap / 2, right=base_hitbox.right - right_overlap / 2)
 
     def terminate(self):
         self.end_time = time()

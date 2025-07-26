@@ -44,7 +44,17 @@ def demo_level():
         Note(
             kind=NoteKind.TAP,
             beat=5,
+            lane=-2,
+        ),
+        Note(
+            kind=NoteKind.TAP,
+            beat=5,
             lane=0,
+        ),
+        Note(
+            kind=NoteKind.TAP,
+            beat=5,
+            lane=2,
         ),
         TimescaleChange(
             beat=6.5,
