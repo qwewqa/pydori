@@ -6,7 +6,7 @@ from sonolus.script.instruction import clear_instruction
 from sonolus.script.interval import remap_clamped, lerp, remap
 from sonolus.script.particle import ParticleHandle
 from sonolus.script.record import Record
-from sonolus.script.runtime import time, delta_time
+from sonolus.script.runtime import time
 
 from pydori.lib.layout import Layout
 from pydori.lib.note import destroy_particle, stop_looped_sfx
@@ -18,6 +18,7 @@ class PhaseState:
     hold_particle: ParticleHandle
     hold_sfx: LoopedEffectHandle
     hold_was_accessed: bool
+    prev_time: float
 
 
 def update_start():
@@ -31,6 +32,7 @@ def update_end():
     if not PhaseState.hold_was_accessed:
         destroy_particle(PhaseState.hold_particle)
         stop_looped_sfx(PhaseState.hold_sfx)
+    PhaseState.prev_time = time()
 
 
 def reset_phase():
@@ -52,12 +54,12 @@ def get_hold_sfx() -> LoopedEffectHandle:
 
 def current_phase_time() -> PhaseTime:
     """Return the current phase timing information."""
-    return PhaseTime(time() - PhaseState.start_time, delta_time())
+    return PhaseTime(time() - PhaseState.start_time, PhaseState.prev_time - PhaseState.start_time)
 
 
 class PhaseTime(Record):
     time: float
-    delta: float
+    prev_time: float
 
     def range(self, start: float, end: float, segments: int = 1) -> PhaseRange:
         return PhaseRange(self, start, end, segments)
@@ -109,7 +111,7 @@ class PhaseInstant(Record):
 
     @property
     def is_active(self):
-        return self.phase.time - self.phase.delta < self.timing <= self.phase.time
+        return self.phase.prev_time < self.timing <= self.phase.time
 
     @property
     def is_done(self):
