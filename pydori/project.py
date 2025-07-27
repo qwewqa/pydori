@@ -1,8 +1,7 @@
 from sonolus.script.engine import Engine, EngineData
 from sonolus.script.project import Project
 
-from pydori.convert.bestdori import convert_sonolus_bandori_level
-from pydori.level import demo_level
+from pydori.level import load_levels
 from pydori.lib.options import Options
 from pydori.lib.ui import ui_config
 from pydori.play.mode import play_mode
@@ -28,9 +27,5 @@ engine = Engine(
 
 project = Project(
     engine=engine,
-    levels=[
-        demo_level(),
-        convert_sonolus_bandori_level("bestdori-official-387-special"),
-        convert_sonolus_bandori_level("bestdori-official-295-special"),
-    ],
+    levels=load_levels,
 )

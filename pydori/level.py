@@ -3,6 +3,7 @@ from itertools import pairwise
 from sonolus.script.archetype import PlayArchetype
 from sonolus.script.level import Level, LevelData
 
+from pydori.convert.bestdori import convert_sonolus_bandori_level
 from pydori.lib.note import NoteKind
 from pydori.play.connector import HoldConnector, SimLine
 from pydori.play.event import BpmChange, TimescaleChange
@@ -167,3 +168,11 @@ def create_sim_lines(entities: list[PlayArchetype]) -> list[PlayArchetype]:
             sim_lines.append(SimLine(first_ref=a.ref(), second_ref=b.ref()))
 
     return sim_lines
+
+
+def load_levels():
+    return [
+        demo_level(),
+        convert_sonolus_bandori_level("bestdori-official-387-special"),
+        convert_sonolus_bandori_level("bestdori-official-295-special"),
+    ]
