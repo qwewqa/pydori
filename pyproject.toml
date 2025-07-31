@@ -5,7 +5,7 @@ description = "A Bandori-based Sonolus engine written with Sonolus.py"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "sonolus.py~=0.3.3"
+    "sonolus.py~=0.4.2"
 ]
 
 [tool.ruff]
