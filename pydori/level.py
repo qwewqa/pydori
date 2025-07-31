@@ -173,6 +173,7 @@ def create_sim_lines(entities: list[PlayArchetype]) -> list[PlayArchetype]:
 def load_levels():
     return [
         demo_level(),
-        convert_sonolus_bandori_level("bestdori-official-387-special"),
+        convert_sonolus_bandori_level("bestdori-official-206-special"),
         convert_sonolus_bandori_level("bestdori-official-295-special"),
+        convert_sonolus_bandori_level("bestdori-official-387-special"),
     ]
