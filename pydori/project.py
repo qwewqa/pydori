@@ -15,6 +15,7 @@ engine = Engine(
     skin="pixel",
     particle="pixel",
     background="darkblue",
+    effect="8bit",
     data=EngineData(
         ui=ui_config,
         options=Options,
