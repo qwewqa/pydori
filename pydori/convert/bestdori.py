@@ -3,9 +3,17 @@ import itertools
 from sonolus.script.level import LevelData, BpmChange, Level
 
 from pydori.convert.utils import get_sonolus_level_item, convert_sonolus_level_item, parse_entities
-from pydori.lib.note import NoteKind
 from pydori.play.connector import HoldConnector, SimLine
-from pydori.play.note import ScoredNote, UnscoredNote
+from pydori.play.note import (
+    Note,
+    TapNote,
+    FlickNote,
+    DirectionalFlickNote,
+    HoldHeadNote,
+    HoldTickNote,
+    HoldAnchorNote,
+    HoldEndNote,
+)
 from pydori.play.stage import Stage
 
 
@@ -20,8 +28,8 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
     bgm_offset = data["bgmOffset"]
     entities = parse_entities(data["entities"])
 
-    notes: list[ScoredNote] = []
-    notes_by_index: dict[int, ScoredNote] = {}
+    notes: list[Note] = []
+    notes_by_index: dict[int, Note] = {}
     bpm_changes: list[BpmChange] = []
     hold_connectors: list[HoldConnector] = []
     sim_lines: list[SimLine] = []
@@ -35,24 +43,21 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                     )
                 )
             case "TapNote":
-                note = ScoredNote(
-                    kind=NoteKind.TAP,
+                note = TapNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
                 notes.append(note)
                 notes_by_index[i] = note
             case "FlickNote" | "SlideEndFlickNote":
-                note = ScoredNote(
-                    kind=NoteKind.FLICK,
+                note = FlickNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
                 notes.append(note)
                 notes_by_index[i] = note
             case "DirectionalFlickNote":
-                note = ScoredNote(
-                    kind=NoteKind.DIRECTIONAL_FLICK,
+                note = DirectionalFlickNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                     # The Bandori engine stores direction as 1/-1 and size as a positive integer 1 to 3.
@@ -62,32 +67,28 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideStartNote":
-                note = ScoredNote(
-                    kind=NoteKind.HOLD_HEAD,
+                note = HoldHeadNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideEndNote":
-                note = ScoredNote(
-                    kind=NoteKind.HOLD_END,
+                note = HoldEndNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideTickNote":
-                note = ScoredNote(
-                    kind=NoteKind.HOLD_TICK,
+                note = HoldTickNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
                 notes.append(note)
                 notes_by_index[i] = note
             case "IgnoredNote":
-                note = UnscoredNote(
-                    kind=NoteKind.HOLD_ANCHOR,
+                note = HoldAnchorNote(
                     beat=d["#BEAT"],
                     lane=d["lane"],
                 )
@@ -112,13 +113,13 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
         # Resolve minor discrepancies in beat values if they are very close
         if a.beat != b.beat and abs(a.beat - b.beat) < 0.002:
             b.beat = a.beat
-    notes_by_beat: dict[float, list[ScoredNote]] = {}
+    notes_by_beat: dict[float, list[Note]] = {}
     for note in notes:
         notes_by_beat.setdefault(note.beat, []).append(note)
     for group in notes_by_beat.values():
         group.sort(key=lambda note: note.lane)
         # Anchors don't make sense to connect to, and connecting to ticks is mostly noise, so we skip them.
-        for a, b in itertools.pairwise(n for n in group if n.kind not in {NoteKind.HOLD_TICK, NoteKind.HOLD_ANCHOR}):
+        for a, b in itertools.pairwise(n for n in group if not isinstance(n, (HoldAnchorNote, HoldTickNote))):
             sim_lines.append(SimLine(first_ref=a.ref(), second_ref=b.ref()))
 
     return LevelData(

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import cast
 
 from sonolus.script.archetype import PreviewArchetype, imported, StandardImport, entity_data
 from sonolus.script.timing import beat_to_time
@@ -18,14 +19,16 @@ from pydori.preview.layout import (
 class PreviewNote(PreviewArchetype):
     """Common archetype for notes."""
 
-    kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
     direction: int = imported()
 
+    kind: NoteKind = entity_data()
     target_time: float = entity_data()
 
     def preprocess(self):
+        self.kind = cast(NoteKind, self.key)
+
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -64,5 +67,20 @@ class PreviewNote(PreviewArchetype):
                 pass
 
 
-PreviewScoredNote = PreviewNote.derive("Note", is_scored=True)
-PreviewUnscoredNote = PreviewNote.derive("UnscoredNote", is_scored=False)
+PreviewTapNote = PreviewNote.derive("Tap", is_scored=True, key=NoteKind.TAP)
+PreviewFlickNote = PreviewNote.derive("Flick", is_scored=True, key=NoteKind.FLICK)
+PreviewDirectionalFlickNote = PreviewNote.derive("DirectionalFlick", is_scored=True, key=NoteKind.DIRECTIONAL_FLICK)
+PreviewHoldHeadNote = PreviewNote.derive("HoldHead", is_scored=True, key=NoteKind.HOLD_HEAD)
+PreviewHoldTickNote = PreviewNote.derive("HoldTick", is_scored=True, key=NoteKind.HOLD_TICK)
+PreviewHoldAnchorNote = PreviewNote.derive("HoldAnchor", is_scored=False, key=NoteKind.HOLD_ANCHOR)
+PreviewHoldEndNote = PreviewNote.derive("HoldEnd", is_scored=True, key=NoteKind.HOLD_END)
+
+ALL_PREVIEW_NOTE_TYPES = (
+    PreviewTapNote,
+    PreviewFlickNote,
+    PreviewDirectionalFlickNote,
+    PreviewHoldHeadNote,
+    PreviewHoldTickNote,
+    PreviewHoldAnchorNote,
+    PreviewHoldEndNote,
+)

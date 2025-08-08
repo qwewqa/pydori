@@ -6,14 +6,13 @@ from pydori.lib.particle import Particles
 from pydori.lib.skin import Skin
 from pydori.play.connector import HoldConnector, SimLine
 from pydori.play.event import BpmChange, TimescaleChange
-from pydori.play.note import ScoredNote, UnscoredNote, HoldManager
+from pydori.play.note import ALL_NOTE_TYPES, HoldManager
 from pydori.play.stage import Stage
 
 play_mode = PlayMode(
     archetypes=[
         Stage,
-        ScoredNote,
-        UnscoredNote,
+        *ALL_NOTE_TYPES,
         HoldManager,
         HoldConnector,
         SimLine,

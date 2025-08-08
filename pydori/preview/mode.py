@@ -3,14 +3,13 @@ from sonolus.script.engine import PreviewMode
 
 from pydori.preview.connector import PreviewHoldConnector, PreviewSimLine
 from pydori.preview.event import PreviewBpmChange, PreviewTimescaleChange
-from pydori.preview.note import PreviewScoredNote, PreviewUnscoredNote
+from pydori.preview.note import ALL_PREVIEW_NOTE_TYPES
 from pydori.preview.stage import PreviewStage
 
 preview_mode = PreviewMode(
     archetypes=[
         PreviewStage,
-        PreviewScoredNote,
-        PreviewUnscoredNote,
+        *ALL_PREVIEW_NOTE_TYPES,
         PreviewHoldConnector,
         PreviewSimLine,
         PreviewBpmChange,

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import cast
 
 from sonolus.script.archetype import (
     WatchArchetype,
@@ -34,13 +35,13 @@ from pydori.lib.streams import Streams
 class WatchNote(WatchArchetype):
     """Common archetype for notes."""
 
-    kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
     direction: int = imported()
     prev_ref: EntityRef[WatchNote] = imported()
     next_ref: EntityRef[WatchNote] = imported()
 
+    kind: NoteKind = entity_data()
     target_time: float = entity_data()
     target_scaled_time: float = entity_data()
     start_scaled_time: float = entity_data()
@@ -55,6 +56,8 @@ class WatchNote(WatchArchetype):
     accuracy: StandardImport.ACCURACY = imported()
 
     def preprocess(self):
+        self.kind = cast(NoteKind, self.key)
+
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -180,8 +183,23 @@ class WatchNote(WatchArchetype):
         self.head._hold_lane = value
 
 
-WatchScoredNote = WatchNote.derive("Note", is_scored=True)
-WatchUnscoredNote = WatchNote.derive("UnscoredNote", is_scored=False)
+WatchTapNote = WatchNote.derive("Tap", is_scored=True, key=NoteKind.TAP)
+WatchFlickNote = WatchNote.derive("Flick", is_scored=True, key=NoteKind.FLICK)
+WatchDirectionalFlickNote = WatchNote.derive("DirectionalFlick", is_scored=True, key=NoteKind.DIRECTIONAL_FLICK)
+WatchHoldHeadNote = WatchNote.derive("HoldHead", is_scored=True, key=NoteKind.HOLD_HEAD)
+WatchHoldTickNote = WatchNote.derive("HoldTick", is_scored=True, key=NoteKind.HOLD_TICK)
+WatchHoldAnchorNote = WatchNote.derive("HoldAnchor", is_scored=False, key=NoteKind.HOLD_ANCHOR)
+WatchHoldEndNote = WatchNote.derive("HoldEnd", is_scored=True, key=NoteKind.HOLD_END)
+
+ALL_WATCH_NOTE_TYPES = (
+    WatchTapNote,
+    WatchFlickNote,
+    WatchDirectionalFlickNote,
+    WatchHoldHeadNote,
+    WatchHoldTickNote,
+    WatchHoldAnchorNote,
+    WatchHoldEndNote,
+)
 
 
 class WatchHoldManager(WatchArchetype):

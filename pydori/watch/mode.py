@@ -4,7 +4,7 @@ from pydori.lib.particle import Particles
 from pydori.lib.skin import Skin
 from pydori.watch.connector import WatchHoldConnector, WatchSimLine
 from pydori.watch.event import WatchBpmChange, WatchTimescaleChange
-from pydori.watch.note import WatchScoredNote, WatchUnscoredNote, WatchHoldManager
+from pydori.watch.note import ALL_WATCH_NOTE_TYPES, WatchHoldManager
 from pydori.watch.stage import WatchStage, WatchScheduledLaneEffect
 from pydori.watch.update_spawn import update_spawn
 from sonolus.script.engine import WatchMode
@@ -13,8 +13,7 @@ watch_mode = WatchMode(
     archetypes=[
         WatchStage,
         WatchScheduledLaneEffect,
-        WatchScoredNote,
-        WatchUnscoredNote,
+        *ALL_WATCH_NOTE_TYPES,
         WatchHoldManager,
         WatchHoldConnector,
         WatchSimLine,

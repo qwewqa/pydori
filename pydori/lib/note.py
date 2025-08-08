@@ -359,10 +359,18 @@ def schedule_hold_sfx(start_time: float, end_time: float):
 
 
 def init_note_life(note_archetype):
-    archetype_life_of(note_archetype).update(
-        perfect_increment=1,
-        miss_increment=-100,
-    )
+    life = archetype_life_of(note_archetype)
+    match note_archetype.key:
+        case NoteKind.HOLD_TICK:
+            life.update(
+                perfect_increment=1,
+                miss_increment=-20,
+            )
+        case _:
+            life.update(
+                perfect_increment=1,
+                miss_increment=-100,
+            )
 
 
 def get_flick_speed_threshold(direction: int) -> float:

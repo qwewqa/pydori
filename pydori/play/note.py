@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import cast
 
 from sonolus.script.archetype import (
     PlayArchetype,
@@ -51,13 +52,13 @@ DEFAULT_BEST_JUDGMENT_TIME = -1e8
 class Note(PlayArchetype):
     """Common archetype for notes."""
 
-    kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
     direction: int = imported()
     prev_ref: EntityRef[Note] = imported()
     next_ref: EntityRef[Note] = imported()
 
+    kind: NoteKind = entity_data()
     judgment_window: JudgmentWindow = entity_data()
     target_time: float = entity_data()
     target_scaled_time: float = entity_data()
@@ -75,6 +76,8 @@ class Note(PlayArchetype):
     end_time: float = exported()
 
     def preprocess(self):
+        self.kind = cast(NoteKind, self.key)
+
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -362,8 +365,23 @@ class Note(PlayArchetype):
         return Hitbox.for_note(self.lane, self.direction)
 
 
-ScoredNote = Note.derive("Note", is_scored=True)
-UnscoredNote = Note.derive("UnscoredNote", is_scored=False)
+TapNote = Note.derive("Tap", is_scored=True, key=NoteKind.TAP)
+FlickNote = Note.derive("Flick", is_scored=True, key=NoteKind.FLICK)
+DirectionalFlickNote = Note.derive("DirectionalFlick", is_scored=True, key=NoteKind.DIRECTIONAL_FLICK)
+HoldHeadNote = Note.derive("HoldHead", is_scored=True, key=NoteKind.HOLD_HEAD)
+HoldTickNote = Note.derive("HoldTick", is_scored=True, key=NoteKind.HOLD_TICK)
+HoldAnchorNote = Note.derive("HoldAnchor", is_scored=False, key=NoteKind.HOLD_ANCHOR)
+HoldEndNote = Note.derive("HoldEnd", is_scored=True, key=NoteKind.HOLD_END)
+
+ALL_NOTE_TYPES = (
+    TapNote,
+    FlickNote,
+    DirectionalFlickNote,
+    HoldHeadNote,
+    HoldTickNote,
+    HoldAnchorNote,
+    HoldEndNote,
+)
 
 
 class HoldManager(PlayArchetype):
