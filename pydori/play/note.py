@@ -51,9 +51,6 @@ DEFAULT_BEST_JUDGMENT_TIME = -1e8
 class Note(PlayArchetype):
     """Common archetype for notes."""
 
-    name = "Note"
-    is_scored = True
-
     kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
@@ -365,14 +362,8 @@ class Note(PlayArchetype):
         return Hitbox.for_note(self.lane, self.direction)
 
 
-class UnscoredNote(Note):
-    """A note that does not contribute to score or judgment.
-
-    Used for hold anchors.
-    """
-
-    name = "UnscoredNote"
-    is_scored = False
+ScoredNote = Note.derive("Note", is_scored=True)
+UnscoredNote = Note.derive("UnscoredNote", is_scored=False)
 
 
 class HoldManager(PlayArchetype):

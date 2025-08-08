@@ -13,7 +13,7 @@ from pydori.lib.stage import (
 )
 from pydori.lib.streams import Streams
 from pydori.lib.ui import init_ui
-from pydori.watch.note import WatchNote
+from pydori.watch.note import WatchScoredNote
 
 
 class WatchStage(WatchArchetype):
@@ -27,7 +27,7 @@ class WatchStage(WatchArchetype):
         init_ui()
         init_layout()
         init_stage_data()
-        init_note_life(WatchNote)
+        init_note_life(WatchScoredNote)
         self.schedule_effects()
 
     def spawn_time(self) -> float:

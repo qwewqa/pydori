@@ -16,7 +16,7 @@ from pydori.lib.stage import (
 from pydori.lib.streams import Streams
 from pydori.lib.ui import init_ui
 from pydori.play.input import refresh_input_state, unclaimed_taps
-from pydori.play.note import NoteMemory, Note
+from pydori.play.note import NoteMemory, ScoredNote
 
 
 class Stage(PlayArchetype):
@@ -30,7 +30,7 @@ class Stage(PlayArchetype):
         init_ui()
         init_layout()
         init_stage_data()
-        init_note_life(Note)
+        init_note_life(ScoredNote)
 
     def spawn_order(self) -> float:
         return -1e8

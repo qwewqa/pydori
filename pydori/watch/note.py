@@ -34,9 +34,6 @@ from pydori.lib.streams import Streams
 class WatchNote(WatchArchetype):
     """Common archetype for notes."""
 
-    name = "Note"
-    is_scored = True
-
     kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
@@ -183,14 +180,8 @@ class WatchNote(WatchArchetype):
         self.head._hold_lane = value
 
 
-class WatchUnscoredNote(WatchNote):
-    """A note that does not contribute to score or judgment.
-
-    Used for hold anchors.
-    """
-
-    name = "UnscoredNote"
-    is_scored = False
+WatchScoredNote = WatchNote.derive("Note", is_scored=True)
+WatchUnscoredNote = WatchNote.derive("UnscoredNote", is_scored=False)
 
 
 class WatchHoldManager(WatchArchetype):

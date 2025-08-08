@@ -18,9 +18,6 @@ from pydori.preview.layout import (
 class PreviewNote(PreviewArchetype):
     """Common archetype for notes."""
 
-    name = "Note"
-    is_scored = True
-
     kind: NoteKind = imported()
     lane: float = imported()
     beat: StandardImport.BEAT = imported()
@@ -67,11 +64,5 @@ class PreviewNote(PreviewArchetype):
                 pass
 
 
-class PreviewUnscoredNote(PreviewNote):
-    """A note that does not contribute to score or judgment.
-
-    Used for hold anchors.
-    """
-
-    name = "UnscoredNote"
-    is_scored = False
+PreviewScoredNote = PreviewNote.derive("Note", is_scored=True)
+PreviewUnscoredNote = PreviewNote.derive("UnscoredNote", is_scored=False)

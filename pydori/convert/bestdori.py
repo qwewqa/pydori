@@ -5,7 +5,7 @@ from sonolus.script.level import LevelData, BpmChange, Level
 from pydori.convert.utils import get_sonolus_level_item, convert_sonolus_level_item, parse_entities
 from pydori.lib.note import NoteKind
 from pydori.play.connector import HoldConnector, SimLine
-from pydori.play.note import Note, UnscoredNote
+from pydori.play.note import ScoredNote, UnscoredNote
 from pydori.play.stage import Stage
 
 
@@ -20,8 +20,8 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
     bgm_offset = data["bgmOffset"]
     entities = parse_entities(data["entities"])
 
-    notes: list[Note] = []
-    notes_by_index: dict[int, Note] = {}
+    notes: list[ScoredNote] = []
+    notes_by_index: dict[int, ScoredNote] = {}
     bpm_changes: list[BpmChange] = []
     hold_connectors: list[HoldConnector] = []
     sim_lines: list[SimLine] = []
@@ -35,7 +35,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                     )
                 )
             case "TapNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.TAP,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -43,7 +43,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "FlickNote" | "SlideEndFlickNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.FLICK,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -51,7 +51,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "DirectionalFlickNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.DIRECTIONAL_FLICK,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -62,7 +62,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideStartNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.HOLD_HEAD,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -70,7 +70,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideEndNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.HOLD_END,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -78,7 +78,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
                 notes.append(note)
                 notes_by_index[i] = note
             case "SlideTickNote":
-                note = Note(
+                note = ScoredNote(
                     kind=NoteKind.HOLD_TICK,
                     beat=d["#BEAT"],
                     lane=d["lane"],
@@ -112,7 +112,7 @@ def convert_sonolus_bandori_level_data(data: dict) -> LevelData:
         # Resolve minor discrepancies in beat values if they are very close
         if a.beat != b.beat and abs(a.beat - b.beat) < 0.002:
             b.beat = a.beat
-    notes_by_beat: dict[float, list[Note]] = {}
+    notes_by_beat: dict[float, list[ScoredNote]] = {}
     for note in notes:
         notes_by_beat.setdefault(note.beat, []).append(note)
     for group in notes_by_beat.values():
