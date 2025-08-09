@@ -5,7 +5,6 @@ from sonolus.script.runtime import time
 
 from pydori.lib.buckets import init_score, init_buckets
 from pydori.lib.layout import init_layout
-from pydori.lib.note import init_note_life
 from pydori.lib.stage import (
     draw_stage,
     init_stage_data,
@@ -31,7 +30,7 @@ class Stage(PlayArchetype):
         init_layout()
         init_stage_data()
         for note_type in ALL_NOTE_TYPES:
-            init_note_life(note_type)
+            note_type.global_preprocess()
 
     def spawn_order(self) -> float:
         return -1e8

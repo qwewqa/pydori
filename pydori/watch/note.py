@@ -27,6 +27,7 @@ from pydori.lib.note import (
     update_hold_particle,
     draw_note_head,
     schedule_hold_sfx,
+    init_note_life,
 )
 from pydori.lib.options import Options
 from pydori.lib.streams import Streams
@@ -41,7 +42,6 @@ class WatchNote(WatchArchetype):
     prev_ref: EntityRef[WatchNote] = imported()
     next_ref: EntityRef[WatchNote] = imported()
 
-    kind: NoteKind = entity_data()
     target_time: float = entity_data()
     target_scaled_time: float = entity_data()
     start_scaled_time: float = entity_data()
@@ -56,8 +56,6 @@ class WatchNote(WatchArchetype):
     accuracy: StandardImport.ACCURACY = imported()
 
     def preprocess(self):
-        self.kind = cast(NoteKind, self.key)
-
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -138,6 +136,14 @@ class WatchNote(WatchArchetype):
                 schedule_hold_sfx(start_time, self.end.target_time)
         else:
             schedule_hold_sfx(self.head.target_time, self.end.target_time)
+
+    @classmethod
+    def global_preprocess(cls):
+        init_note_life(cls)
+
+    @property
+    def kind(self) -> NoteKind:
+        return cast(NoteKind, self.key)
 
     @property
     def y(self) -> float:

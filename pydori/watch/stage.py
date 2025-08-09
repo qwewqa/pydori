@@ -4,7 +4,6 @@ from sonolus.script.timing import time_to_scaled_time
 
 from pydori.lib.buckets import init_score, init_buckets
 from pydori.lib.layout import init_layout
-from pydori.lib.note import init_note_life
 from pydori.lib.stage import (
     init_stage_data,
     draw_stage,
@@ -28,7 +27,7 @@ class WatchStage(WatchArchetype):
         init_layout()
         init_stage_data()
         for note_type in ALL_WATCH_NOTE_TYPES:
-            init_note_life(note_type)
+            note_type.global_preprocess()
         self.schedule_effects()
 
     def spawn_time(self) -> float:

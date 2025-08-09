@@ -23,12 +23,9 @@ class PreviewNote(PreviewArchetype):
     beat: StandardImport.BEAT = imported()
     direction: int = imported()
 
-    kind: NoteKind = entity_data()
     target_time: float = entity_data()
 
     def preprocess(self):
-        self.kind = cast(NoteKind, self.key)
-
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -65,6 +62,10 @@ class PreviewNote(PreviewArchetype):
                     arrow_sprite.draw(layout, z=get_z(LAYER_ARROW, lane=arrow_lane, y=self.target_time))
             case _:
                 pass
+
+    @property
+    def kind(self) -> NoteKind:
+        return cast(NoteKind, self.key)
 
 
 PreviewTapNote = PreviewNote.derive("Tap", is_scored=True, key=NoteKind.TAP)

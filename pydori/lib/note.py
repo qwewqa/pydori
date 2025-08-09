@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import IntEnum
 
-from sonolus.script.archetype import archetype_life_of
+from sonolus.script.archetype import PlayArchetype, WatchArchetype
 from sonolus.script.bucket import Bucket, Judgment
 from sonolus.script.easing import ease_out_quad
 from sonolus.script.effect import Effect, LoopedEffectHandle
@@ -358,16 +358,15 @@ def schedule_hold_sfx(start_time: float, end_time: float):
     Effects.hold.schedule_loop(start_time).stop(end_time)
 
 
-def init_note_life(note_archetype):
-    life = archetype_life_of(note_archetype)
-    match note_archetype.key:
+def init_note_life(archetype: type[PlayArchetype | WatchArchetype]):
+    match archetype.key:
         case NoteKind.HOLD_TICK:
-            life.update(
+            archetype.update_life(
                 perfect_increment=1,
                 miss_increment=-20,
             )
         case _:
-            life.update(
+            archetype.update_life(
                 perfect_increment=1,
                 miss_increment=-100,
             )

@@ -40,6 +40,7 @@ from pydori.lib.note import (
     update_hold_particle,
     stop_looped_sfx,
     update_hold_sfx,
+    init_note_life,
 )
 from pydori.lib.options import Options
 from pydori.lib.streams import Streams
@@ -58,7 +59,6 @@ class Note(PlayArchetype):
     prev_ref: EntityRef[Note] = imported()
     next_ref: EntityRef[Note] = imported()
 
-    kind: NoteKind = entity_data()
     judgment_window: JudgmentWindow = entity_data()
     target_time: float = entity_data()
     target_scaled_time: float = entity_data()
@@ -76,8 +76,6 @@ class Note(PlayArchetype):
     end_time: float = exported()
 
     def preprocess(self):
-        self.kind = cast(NoteKind, self.key)
-
         if Options.mirror:
             self.lane = -self.lane
             self.direction = -self.direction
@@ -311,6 +309,14 @@ class Note(PlayArchetype):
         self.result.bucket_value = self.result.accuracy * 1000
         self.despawn = True
         self.is_judged = True
+
+    @classmethod
+    def global_preprocess(cls):
+        init_note_life(cls)
+
+    @property
+    def kind(self) -> NoteKind:
+        return cast(NoteKind, self.key)
 
     @property
     def y(self) -> float:
