@@ -361,12 +361,12 @@ def schedule_hold_sfx(start_time: float, end_time: float):
 def init_note_life(archetype: type[PlayArchetype | WatchArchetype]):
     match archetype.key:
         case NoteKind.HOLD_TICK:
-            archetype.update_life(
+            archetype.life.update(
                 perfect_increment=1,
                 miss_increment=-20,
             )
         case _:
-            archetype.update_life(
+            archetype.life.update(
                 perfect_increment=1,
                 miss_increment=-100,
             )
