@@ -1,7 +1,7 @@
 from sonolus.script.archetype import PlayArchetype, callback
 from sonolus.script.array import Dim
 from sonolus.script.containers import ArraySet
-from sonolus.script.runtime import time
+from sonolus.script.runtime import offset_adjusted_time
 
 from pydori.lib.buckets import init_score, init_buckets
 from pydori.lib.layout import init_layout
@@ -62,4 +62,4 @@ class Stage(PlayArchetype):
         if len(effect_lanes) > 0:
             # Record this so it can be replayed in watch mode since there's no direct
             # access to touches in watch mode.
-            Streams.effect_lanes[time()] = effect_lanes
+            Streams.effect_lanes[offset_adjusted_time()] = effect_lanes

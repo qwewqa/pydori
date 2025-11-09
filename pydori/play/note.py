@@ -409,7 +409,7 @@ class HoldManager(PlayArchetype):
             return
         if time() < self.head.target_time:
             return
-        Streams.hold_activity[self.head.index][time()] = self.head.has_active_touch
+        Streams.hold_activity[self.head.index][offset_adjusted_time()] = self.head.has_active_touch
         if self.head.has_active_touch:
             draw_note_head(self.head.hold_lane)
             update_hold_particle(self.particle, self.head.hold_lane)
