@@ -12,7 +12,6 @@ from urllib.request import Request, urlopen
 from sonolus.script.level import Level, LevelData
 from sonolus.script.metadata import Tag
 
-
 # Prefix added to item names
 PREFIX = "pydori"
 

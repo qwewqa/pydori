@@ -4,7 +4,7 @@ from typing import Self
 from sonolus.script.array import Dim
 from sonolus.script.easing import ease_out_quad
 from sonolus.script.globals import level_data
-from sonolus.script.interval import remap, lerp, interp_clamped, clamp
+from sonolus.script.interval import clamp, interp_clamped, lerp, remap
 from sonolus.script.quad import Quad, Rect
 from sonolus.script.record import Record
 from sonolus.script.transform import Transform2d

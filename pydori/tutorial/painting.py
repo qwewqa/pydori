@@ -1,11 +1,10 @@
 from math import pi
 
-from sonolus.script.interval import lerp_clamped, interp_clamped, remap
+from sonolus.script.interval import interp_clamped, lerp_clamped, remap
 from sonolus.script.runtime import runtime_ui
 from sonolus.script.vec import Vec2
 
 from pydori.tutorial.instructions import InstructionIcons
-
 
 # Scale factor for flick motion.
 FLICK_MOTION_DISTANCE = 0.75

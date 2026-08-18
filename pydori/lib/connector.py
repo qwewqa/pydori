@@ -1,4 +1,4 @@
-from pydori.lib.layer import get_z, LAYER_CONNECTOR, LAYER_SIM_LINE
+from pydori.lib.layer import LAYER_CONNECTOR, LAYER_SIM_LINE, get_z
 from pydori.lib.layout import layout_hold_connector, layout_sim_line, note_y_to_alpha
 from pydori.lib.options import Options
 from pydori.lib.skin import Skin

@@ -1,6 +1,6 @@
 from sonolus.script.array import Dim
 from sonolus.script.containers import ArraySet
-from sonolus.script.stream import streams, Stream, StreamGroup
+from sonolus.script.stream import Stream, StreamGroup, streams
 
 
 @streams

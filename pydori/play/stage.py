@@ -3,19 +3,19 @@ from sonolus.script.array import Dim
 from sonolus.script.containers import ArraySet
 from sonolus.script.runtime import offset_adjusted_time
 
-from pydori.lib.buckets import init_score, init_buckets
+from pydori.lib.buckets import init_buckets, init_score
 from pydori.lib.layout import init_layout
 from pydori.lib.stage import (
+    StageData,
     draw_stage,
     init_stage_data,
-    StageData,
-    play_lane_sfx,
     play_lane_particle,
+    play_lane_sfx,
 )
 from pydori.lib.streams import Streams
 from pydori.lib.ui import init_ui
 from pydori.play.input import refresh_input_state, unclaimed_taps
-from pydori.play.note import NoteMemory, ALL_NOTE_TYPES
+from pydori.play.note import ALL_NOTE_TYPES, NoteMemory
 
 
 class Stage(PlayArchetype):
@@ -59,7 +59,7 @@ class Stage(PlayArchetype):
                     effect_lanes.add(lane)
                     play_lane_particle(lane)
                     play_lane_sfx()
-        if len(effect_lanes) > 0:
+        if effect_lanes:
             # Record this so it can be replayed in watch mode since there's no direct
             # access to touches in watch mode.
             Streams.effect_lanes[offset_adjusted_time()] = effect_lanes

@@ -3,7 +3,7 @@ from __future__ import annotations
 from sonolus.script.effect import LoopedEffectHandle
 from sonolus.script.globals import level_memory
 from sonolus.script.instruction import clear_instruction
-from sonolus.script.interval import remap_clamped, lerp, remap
+from sonolus.script.interval import lerp, remap, remap_clamped
 from sonolus.script.particle import ParticleHandle
 from sonolus.script.record import Record
 from sonolus.script.runtime import time

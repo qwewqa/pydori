@@ -3,49 +3,48 @@ from __future__ import annotations
 from typing import cast
 
 from sonolus.script.archetype import (
-    PlayArchetype,
-    imported,
-    entity_data,
-    entity_memory,
-    shared_memory,
-    exported,
     EntityRef,
+    PlayArchetype,
     StandardImport,
     callback,
+    entity_data,
+    entity_memory,
+    exported,
+    imported,
+    shared_memory,
 )
-from sonolus.script.bucket import JudgmentWindow, Judgment
 from sonolus.script.array import Dim
+from sonolus.script.bucket import Judgment, JudgmentWindow
 from sonolus.script.containers import VarArray
 from sonolus.script.effect import LoopedEffectHandle
 from sonolus.script.globals import level_memory
 from sonolus.script.interval import Interval, clamp
 from sonolus.script.particle import ParticleHandle
 from sonolus.script.quad import Quad
-from sonolus.script.runtime import scaled_time, time, input_offset, touches, offset_adjusted_time
+from sonolus.script.runtime import input_offset, offset_adjusted_time, scaled_time, time, touches
 from sonolus.script.timing import beat_to_time, time_to_scaled_time
 from sonolus.script.vec import Vec2
 
 from pydori.lib.buckets import note_judgment_window
-from pydori.lib.layout import get_note_y, preempt_time, Hitbox
+from pydori.lib.layout import Hitbox, get_note_y, preempt_time
 from pydori.lib.note import (
-    get_note_bucket,
-    draw_note,
     NoteKind,
-    schedule_note_sfx,
-    play_note_sfx,
-    play_note_particle,
-    get_flick_speed_threshold,
     destroy_particle,
+    draw_note,
     draw_note_head,
-    update_hold_particle,
-    stop_looped_sfx,
-    update_hold_sfx,
+    get_flick_speed_threshold,
+    get_note_bucket,
     init_note_life,
+    play_note_particle,
+    play_note_sfx,
+    schedule_note_sfx,
+    stop_looped_sfx,
+    update_hold_particle,
+    update_hold_sfx,
 )
 from pydori.lib.options import Options
 from pydori.lib.streams import Streams
 from pydori.play.input import claim_touch, unclaimed_taps, unclaimed_touches
-
 
 DEFAULT_BEST_JUDGMENT_TIME = -1e8
 
@@ -209,7 +208,7 @@ class Note(PlayArchetype):
                     continue
                 if touch.ended:
                     if quad.contains_point(touch.position):
-                        self.judge(offset_adjusted_time())
+                        self.judge(touch.time)
                     else:
                         self.fail()
                 break
@@ -289,7 +288,7 @@ class Note(PlayArchetype):
         return Hitbox(left=base_hitbox.left + left_overlap / 2, right=base_hitbox.right - right_overlap / 2)
 
     def terminate(self):
-        self.end_time = time()
+        self.end_time = offset_adjusted_time()
 
     def judge(self, judgment_time: float):
         judgment = self.judgment_window.judge(actual=judgment_time, target=self.target_time)

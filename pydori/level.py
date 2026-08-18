@@ -7,13 +7,13 @@ from pydori.convert.bestdori import convert_sonolus_bandori_level
 from pydori.play.connector import HoldConnector, SimLine
 from pydori.play.event import BpmChange, TimescaleChange
 from pydori.play.note import (
-    Note,
-    TapNote,
     FlickNote,
-    HoldHeadNote,
-    HoldTickNote,
     HoldAnchorNote,
     HoldEndNote,
+    HoldHeadNote,
+    HoldTickNote,
+    Note,
+    TapNote,
 )
 from pydori.play.stage import Stage
 

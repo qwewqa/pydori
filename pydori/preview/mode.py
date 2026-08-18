@@ -1,6 +1,6 @@
-from pydori.lib.skin import Skin
 from sonolus.script.engine import PreviewMode
 
+from pydori.lib.skin import Skin
 from pydori.preview.connector import PreviewHoldConnector, PreviewSimLine
 from pydori.preview.event import PreviewBpmChange, PreviewTimescaleChange
 from pydori.preview.note import ALL_PREVIEW_NOTE_TYPES

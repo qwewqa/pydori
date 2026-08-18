@@ -1,6 +1,6 @@
 from sonolus.script.runtime import navigation_direction
 
-from pydori.tutorial.update import inc_phase, dec_phase
+from pydori.tutorial.update import dec_phase, inc_phase
 
 
 def navigate():

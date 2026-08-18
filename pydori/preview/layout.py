@@ -8,7 +8,7 @@ from sonolus.script.quad import Quad, Rect
 from sonolus.script.runtime import HorizontalAlign, ScrollDirection, canvas, screen
 from sonolus.script.vec import Vec2
 
-from pydori.lib.layout import LANE_COUNT, START_LANE, END_LANE
+from pydori.lib.layout import END_LANE, LANE_COUNT, START_LANE
 
 # Number of seconds each column represents.
 PREVIEW_COLUMN_SECS = 2

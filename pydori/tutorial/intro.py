@@ -2,17 +2,16 @@ from sonolus.script.sprite import Sprite
 from sonolus.script.transform import Transform2d
 from sonolus.script.vec import Vec2
 
-from pydori.lib.layer import get_z, LAYER_NOTE, LAYER_ARROW, LAYER_CONNECTOR
+from pydori.lib.layer import LAYER_ARROW, LAYER_CONNECTOR, LAYER_NOTE, get_z
 from pydori.lib.layout import (
-    layout_note_body,
-    layout_flick_arrow,
     layout_directional_flick_arrow,
+    layout_flick_arrow,
     layout_hold_connector,
+    layout_note_body,
     transform_vec,
 )
-from pydori.lib.note import NoteKind, get_note_body_sprite, get_note_arrow_sprite
+from pydori.lib.note import NoteKind, get_note_arrow_sprite, get_note_body_sprite
 from pydori.lib.skin import Skin
-
 
 # Scale factor for tutorial intro notes
 INTRO_SCALE = 3

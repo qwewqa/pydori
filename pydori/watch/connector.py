@@ -1,8 +1,8 @@
-from sonolus.script.archetype import WatchArchetype, EntityRef, imported
+from sonolus.script.archetype import EntityRef, WatchArchetype, imported
 from sonolus.script.interval import remap
 from sonolus.script.runtime import time
 
-from pydori.lib.connector import draw_sim_line, draw_hold_connector
+from pydori.lib.connector import draw_hold_connector, draw_sim_line
 from pydori.watch.note import WatchNote
 
 

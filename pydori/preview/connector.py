@@ -1,9 +1,9 @@
-from sonolus.script.archetype import EntityRef, imported, PreviewArchetype
+from sonolus.script.archetype import EntityRef, PreviewArchetype, imported
 
-from pydori.lib.layer import get_z, LAYER_CONNECTOR, LAYER_SIM_LINE
+from pydori.lib.layer import LAYER_CONNECTOR, LAYER_SIM_LINE, get_z
 from pydori.lib.options import Options
 from pydori.lib.skin import Skin
-from pydori.preview.layout import time_to_preview_col, layout_preview_connector, layout_preview_sim_line
+from pydori.preview.layout import layout_preview_connector, layout_preview_sim_line, time_to_preview_col
 from pydori.preview.note import PreviewNote
 
 

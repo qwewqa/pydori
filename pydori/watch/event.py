@@ -1,4 +1,4 @@
-from sonolus.script.archetype import StandardArchetypeName, StandardImport, imported, WatchArchetype
+from sonolus.script.archetype import StandardArchetypeName, StandardImport, WatchArchetype, imported
 
 
 class WatchBpmChange(WatchArchetype):

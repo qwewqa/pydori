@@ -1,4 +1,4 @@
-from sonolus.script.sprite import StandardSprite, skin, RenderMode
+from sonolus.script.sprite import RenderMode, StandardSprite, skin
 
 
 @skin

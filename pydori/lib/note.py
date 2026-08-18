@@ -13,15 +13,15 @@ from sonolus.script.sprite import Sprite
 
 from pydori.lib.buckets import Buckets
 from pydori.lib.effect import Effects
-from pydori.lib.layer import get_z, LAYER_NOTE, LAYER_ARROW, LAYER_NOTE_HEAD
+from pydori.lib.layer import LAYER_ARROW, LAYER_NOTE, LAYER_NOTE_HEAD, get_z
 from pydori.lib.layout import (
-    note_y_to_alpha,
-    layout_note_body,
-    layout_flick_arrow,
-    layout_directional_flick_arrow,
-    layout_note_linear_particle,
-    layout_note_circular_particle,
     Layout,
+    layout_directional_flick_arrow,
+    layout_flick_arrow,
+    layout_note_body,
+    layout_note_circular_particle,
+    layout_note_linear_particle,
+    note_y_to_alpha,
 )
 from pydori.lib.options import Options
 from pydori.lib.particle import Particles
@@ -361,12 +361,12 @@ def schedule_hold_sfx(start_time: float, end_time: float):
 def init_note_life(archetype: type[PlayArchetype | WatchArchetype]):
     match archetype.key:
         case NoteKind.HOLD_TICK:
-            archetype.life.update(
+            archetype.archetype_life.update(
                 perfect_increment=1,
                 miss_increment=-20,
             )
         case _:
-            archetype.life.update(
+            archetype.archetype_life.update(
                 perfect_increment=1,
                 miss_increment=-100,
             )

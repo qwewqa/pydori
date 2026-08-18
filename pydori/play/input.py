@@ -1,4 +1,4 @@
-from typing import Iterator
+from collections.abc import Iterator
 
 from sonolus.script.array import Dim
 from sonolus.script.containers import ArraySet

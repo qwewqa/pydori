@@ -1,5 +1,5 @@
-from sonolus.script.runtime import runtime_ui, screen, HorizontalAlign
-from sonolus.script.ui import UiConfig, UiJudgmentErrorStyle, UiJudgmentErrorPlacement
+from sonolus.script.runtime import HorizontalAlign, runtime_ui, screen
+from sonolus.script.ui import UiConfig, UiJudgmentErrorPlacement, UiJudgmentErrorStyle
 from sonolus.script.vec import Vec2
 
 ui_config = UiConfig(

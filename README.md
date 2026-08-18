@@ -7,14 +7,8 @@ but it is not an exact replica of the original game and differs in both mechanic
 ## Usage
 
 ### Setup
-Install Sonolus.py via your preferred package manager.
+Install [uv](https://docs.astral.sh/uv/), then install the project dependencies:
 
-pip:
-```bash
-pip install sonolus.py
-```
-
-uv:
 ```bash
 uv sync
 ```
@@ -22,5 +16,5 @@ uv sync
 ### Running
 Build and run the dev server:
 ```bash
-sonolus-py dev --[play|watch|preview|tutorial]
+uv run sonolus-py dev
 ```

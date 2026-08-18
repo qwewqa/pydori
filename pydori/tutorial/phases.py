@@ -9,22 +9,22 @@ from pydori.lib.layout import lane_to_transformed_vec
 from pydori.lib.note import (
     NoteKind,
     draw_note,
-    play_note_sfx,
-    play_note_particle,
-    update_hold_particle,
     draw_note_head,
+    play_note_particle,
+    play_note_sfx,
+    update_hold_particle,
     update_hold_sfx,
 )
+from pydori.tutorial.framework import PhaseTime, get_hold_particle, get_hold_sfx, progress_to_y
 from pydori.tutorial.instructions import Instructions
 from pydori.tutorial.intro import draw_tutorial_intro_note
 from pydori.tutorial.painting import (
-    paint_tap_motion,
-    paint_tap_flick_motion,
+    paint_hold_flick_motion,
     paint_hold_motion,
     paint_release_motion,
-    paint_hold_flick_motion,
+    paint_tap_flick_motion,
+    paint_tap_motion,
 )
-from pydori.tutorial.framework import PhaseTime, progress_to_y, get_hold_particle, get_hold_sfx
 
 ANGLE_RIGHT = 0
 ANGLE_UP = pi / 2

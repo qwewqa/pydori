@@ -1,10 +1,10 @@
 from sonolus.script.archetype import PreviewArchetype, StandardArchetypeName, StandardImport, entity_data, imported
-from sonolus.script.printing import PrintFormat, PrintColor
-from sonolus.script.timing import beat_to_time, beat_to_starting_beat
+from sonolus.script.printing import PrintColor, PrintFormat
+from sonolus.script.timing import beat_to_starting_beat, beat_to_time
 
-from pydori.lib.layer import LAYER_BPM_CHANGE_LINE, get_z, LAYER_MEASURE_LINE, LAYER_TIMESCALE_CHANGE_LINE
+from pydori.lib.layer import LAYER_BPM_CHANGE_LINE, LAYER_MEASURE_LINE, LAYER_TIMESCALE_CHANGE_LINE, get_z
 from pydori.lib.skin import Skin
-from pydori.preview.layout import layout_preview_bar_line, PREVIEW_BAR_LINE_ALPHA, print_at_time, PreviewData
+from pydori.preview.layout import PREVIEW_BAR_LINE_ALPHA, PreviewData, layout_preview_bar_line, print_at_time
 
 # Number of beats between measure lines drawn in the preview.
 METER = 4

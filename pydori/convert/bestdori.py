@@ -1,18 +1,18 @@
 import itertools
 
-from sonolus.script.level import LevelData, BpmChange, Level
+from sonolus.script.level import BpmChange, Level, LevelData
 
-from pydori.convert.utils import get_sonolus_level_item, convert_sonolus_level_item, parse_entities
+from pydori.convert.utils import convert_sonolus_level_item, get_sonolus_level_item, parse_entities
 from pydori.play.connector import HoldConnector, SimLine
 from pydori.play.note import (
-    Note,
-    TapNote,
-    FlickNote,
     DirectionalFlickNote,
-    HoldHeadNote,
-    HoldTickNote,
+    FlickNote,
     HoldAnchorNote,
     HoldEndNote,
+    HoldHeadNote,
+    HoldTickNote,
+    Note,
+    TapNote,
 )
 from pydori.play.stage import Stage
 

@@ -1,7 +1,7 @@
 from sonolus.script.globals import level_memory
 
 from pydori.lib.stage import draw_stage
-from pydori.tutorial.framework import update_start, update_end, current_phase_time, reset_phase
+from pydori.tutorial.framework import current_phase_time, reset_phase, update_end, update_start
 from pydori.tutorial.phases import PHASES
 
 

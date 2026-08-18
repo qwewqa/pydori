@@ -3,9 +3,9 @@ from sonolus.script.engine import TutorialMode
 from pydori.lib.effect import Effects
 from pydori.lib.particle import Particles
 from pydori.lib.skin import Skin
-from pydori.tutorial.preprocess import preprocess
 from pydori.tutorial.instructions import InstructionIcons, Instructions
 from pydori.tutorial.navigate import navigate
+from pydori.tutorial.preprocess import preprocess
 from pydori.tutorial.update import update
 
 tutorial_mode = TutorialMode(

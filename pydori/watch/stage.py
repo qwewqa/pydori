@@ -1,12 +1,12 @@
 from sonolus.script.archetype import WatchArchetype, entity_memory
-from sonolus.script.runtime import is_replay, time, delta_time
+from sonolus.script.runtime import is_replay, is_skip
 from sonolus.script.timing import time_to_scaled_time
 
-from pydori.lib.buckets import init_score, init_buckets
+from pydori.lib.buckets import init_buckets, init_score
 from pydori.lib.layout import init_layout
 from pydori.lib.stage import (
-    init_stage_data,
     draw_stage,
+    init_stage_data,
     play_lane_particle,
     schedule_lane_sfx,
 )
@@ -64,6 +64,6 @@ class WatchScheduledLaneEffect(WatchArchetype):
     def despawn_time(self) -> float:
         return self.spawn_time() + 1
 
-    def update_parallel(self):
-        if time() - delta_time() < self.time <= time():
+    def initialize(self):
+        if not is_skip():
             play_lane_particle(self.lane)

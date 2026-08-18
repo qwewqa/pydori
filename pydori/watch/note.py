@@ -3,31 +3,31 @@ from __future__ import annotations
 from typing import cast
 
 from sonolus.script.archetype import (
+    EntityRef,
+    StandardImport,
     WatchArchetype,
+    entity_data,
+    entity_memory,
     imported,
     shared_memory,
-    EntityRef,
-    entity_data,
-    StandardImport,
-    entity_memory,
 )
 from sonolus.script.bucket import Judgment
 from sonolus.script.particle import ParticleHandle
-from sonolus.script.runtime import is_replay, time, scaled_time, is_skip
+from sonolus.script.runtime import is_replay, is_skip, scaled_time, time
 from sonolus.script.timing import beat_to_time, time_to_scaled_time
 
-from pydori.lib.layout import preempt_time, get_note_y
+from pydori.lib.layout import get_note_y, preempt_time
 from pydori.lib.note import (
     NoteKind,
-    get_note_bucket,
-    schedule_note_sfx,
-    draw_note,
-    play_note_particle,
     destroy_particle,
-    update_hold_particle,
+    draw_note,
     draw_note_head,
-    schedule_hold_sfx,
+    get_note_bucket,
     init_note_life,
+    play_note_particle,
+    schedule_hold_sfx,
+    schedule_note_sfx,
+    update_hold_particle,
 )
 from pydori.lib.options import Options
 from pydori.lib.streams import Streams
@@ -78,7 +78,10 @@ class WatchNote(WatchArchetype):
 
         if is_replay():
             if self.judgment != Judgment.MISS:
-                schedule_note_sfx(self.kind, self.judgment, self.end_time)
+                if Options.auto_sfx_enabled:
+                    schedule_note_sfx(self.kind, Judgment.PERFECT, self.target_time)
+                else:
+                    schedule_note_sfx(self.kind, self.judgment, self.end_time)
             self.result.bucket_value = self.accuracy * 1000
         else:
             self.judgment = Judgment.PERFECT
@@ -93,6 +96,8 @@ class WatchNote(WatchArchetype):
 
     def despawn_time(self) -> float:
         if is_replay():
+            if self.end_time == 0 and self.accuracy == 0 and self.judgment == Judgment.MISS:
+                return 1e8
             return self.end_scaled_time
         else:
             return self.target_scaled_time

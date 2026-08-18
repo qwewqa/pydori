@@ -1,4 +1,4 @@
-from sonolus.script.archetype import PlayArchetype, EntityRef, imported
+from sonolus.script.archetype import EntityRef, PlayArchetype, imported
 from sonolus.script.interval import remap
 from sonolus.script.runtime import time
 
